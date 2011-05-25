@@ -39,6 +39,11 @@ var routes = function (app) {
   
   app.get('/inline', function (req, res) {
     if (req.query.url) {
+      
+      if (req.query.url.indexOf('http') !== 0) {
+        req.query.url = 'http://' + req.query.url;
+      }
+      
       var job = connect.utils.uid(10);
       inliners[job] = {
         inliner: new Inliner(req.query.url)
