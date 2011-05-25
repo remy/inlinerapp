@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8 />
+<title>Inliner - inline the crap out of your site</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Inliner</h1>
+  <p>Inline the crap out of your site, making it a single file, then add a cache manifest to make it work offline &lt;3 mobile.</p>
+<form action="/inline">
+  <input id="url" name="url" type="url" placeholder="http://" autofocus />
+  <input type="submit" />
+</form>
+<ul id="progress">
+</ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script>
+var $url = $('#url'),
+    $progress = $('#progress'),
+    $inputs = $(':input');
+
+var $form = $('form').submit(function (event) {
+  event.preventDefault();
+  $progress.empty();
+  var url = $url.val();
+  
+  $inputs.attr('disabled', true);
+  $form.addClass('loading');
+  
+  $.ajax({
+    url: '/inline',
+    data: 'url=' + url,
+    dataType: 'json',
+    success: function (resp) {
+      if (resp.job) {
+        var es = new EventSource('/progress?job=' + resp.job);
+        es.onmessage = function (event) {
+          var parts = event.data.split(' '),
+              command = parts.shift();
+          $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');
+          
+          if (command == 'complete') {
+            es.close();
+            $inputs.attr('disabled', false);
+            $form.removeClass('loading');
+            $progress.before('<p class="complete"><a href="' + parts[0] + '">Download ' + url + '</a></p>')
+          }
+        };
+      } else {
+        $inputs.attr('disabled', false);
+        $form.removeClass('loading');
+      }
+    },
+    error: function () {
+      $inputs.attr('disabled', false);
+      $form.removeClass('loading');
+    }
+  })
+});
+
+</script>
+</body>
+</html>

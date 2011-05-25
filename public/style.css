@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 600px;
+  margin: 20px auto;
+}
+
+body, input {
+  font-size: 20px;
+  font-family: menlo;
+}
+
+p.complete {
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+input[type=url] {
+  padding: 5px;
+  width: 400px;
+}
+
+form {
+  margin: 20px 0;
+}
+
+form.loading input[type=url] {
+  background: url(/loader.gif) no-repeat 97% center;
+}
+
+#progress {
+  margin-top: 20px;
+  font-size: 12px;
+  list-style: none;
+}
+
+#progress li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 5px 0;
+}
+
+#progress li:hover {
+  overflow: visible;
+}
+
+#progress li span:first-child {
+  padding: 2px 5px;
+  display: inline-block;
+  width: 56px;
+  color: #fff;
+  text-align: right;
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+span.get {
+  background: #53777A;
+}
+
+span.compress {
+  background: #C02942;
+}
+
+span.encode {
+  background: #D95B43;
+}
+
+span.import {
+  background: #ECD078;
+}
+
+span.complete {
+  background: #542437;
+}
+
