@@ -1,7 +1,7 @@
 var fs = require('fs'),
     url = require('url'),
     querystring = require('querystring'),
-    connect = require('connect'),
+    connect = require('./node_modules/connect'),
     Inliner = require('./inliner/inliner'),
     port = parseInt(process.argv[2], 10) || 80,
     inliners = {};
@@ -43,8 +43,10 @@ var routes = function (app) {
       if (req.query.url.indexOf('http') !== 0) {
         req.query.url = 'http://' + req.query.url;
       }
-      
+            
       var job = connect.utils.uid(10);
+      console.log('new job: ' + req.query.url + ' (' + job + ')');
+      
       inliners[job] = {
         inliner: new Inliner(req.query.url)
       };
