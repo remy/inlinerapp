@@ -10,7 +10,7 @@
   <p>Inline the crap out of your site, making it a single file, then add a cache manifest to make it work offline &lt;3 mobile.</p>
 <form action="/inline">
   <input id="url" name="url" type="url" placeholder="http://" autofocus />
-  <input type="submit" />
+  <input type="submit" /> <span id="todo"></span>
 </form>
 <ul id="progress">
 </ul>
@@ -18,11 +18,13 @@
 <script>
 var $url = $('#url'),
     $progress = $('#progress'),
-    $inputs = $(':input');
+    $inputs = $(':input'),
+    $todo = $('#todo');
 
 var $form = $('form').submit(function (event) {
   event.preventDefault();
   $progress.empty();
+  $todo.empty();
   var url = $url.val();
   
   $inputs.attr('disabled', true);
@@ -38,8 +40,13 @@ var $form = $('form').submit(function (event) {
         es.onmessage = function (event) {
           var parts = event.data.split(' '),
               command = parts.shift();
-          $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');
-          
+              
+          if (command == 'jobs') {
+            $todo.html(parts[0]);
+          } else {
+            $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');            
+          }
+              
           if (command == 'complete') {
             es.close();
             $inputs.attr('disabled', false);

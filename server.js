@@ -2,7 +2,7 @@ var fs = require('fs'),
     url = require('url'),
     querystring = require('querystring'),
     connect = require('connect'),
-    Inliner = require('inliner'),
+    Inliner = require('./inliner/inliner'),
     port = parseInt(process.argv[2], 10) || 80,
     inliners = {};
 
@@ -15,6 +15,10 @@ var routes = function (app) {
       
       inliners[job].inliner.on('progress', function (status) {
         res.write('data: ' + status + '\n\n');
+      });
+
+      inliners[job].inliner.on('jobs', function (total) {
+        res.write('data: jobs ' + total + '\n\n');
       });
       
       inliners[job].inliner.on('done', function (url) {
