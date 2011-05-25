@@ -10,7 +10,7 @@ body {
 
 body, input {
   font-size: 20px;
-  font-family: menlo;
+  font-family: menlo, monospace;
 }
 
 p.complete {
