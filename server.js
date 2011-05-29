@@ -23,7 +23,6 @@ var routes = function (app) {
       });
       
       inliners[job].inliner.on('done', function (url) {
-        console.log('done: ' + url);
         fs.stat(__dirname + '/public' + url, function (err, stat) {
           var size = '';
           if (!err) {
@@ -38,7 +37,6 @@ var routes = function (app) {
       });
       
       if (inliners[job].inliner.dirty) {
-        console.log('dirty');
         res.write('data: error url could not be requested\n\n');
       }
     } else {
@@ -55,7 +53,7 @@ var routes = function (app) {
       }
             
       var job = connect.utils.uid(10);
-      console.log('new job: ' + req.query.url + ' (' + job + ')');
+      console.log((new Date).toUTCString() + ' ' + req.query.url + ' (' + job + ')');
       
       var options;
       
