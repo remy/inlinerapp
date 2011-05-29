@@ -54,7 +54,6 @@ var $form = $('form').submit(function (event) {
           if (command == 'jobs') {
             $todo.html(parts[0]);
           } else {
-            console.log('ok?');
             $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');
           }
               
@@ -64,7 +63,6 @@ var $form = $('form').submit(function (event) {
             $form.removeClass('loading');
             $progress.before('<p class="complete"><a href="' + parts[0] + '">Download ' + url + '</a></p>');
           } else if (command == 'error') {
-            console.log('closing!', command, parts);
             es.close();
             $inputs.attr('disabled', false);
             $form.removeClass('loading');
