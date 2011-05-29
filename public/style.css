@@ -13,12 +13,7 @@ body, input {
   font-family: menlo, monospace;
 }
 
-p.complete {
-  margin: 20px 0;
-  font-weight: bold;
-}
-
-input[type=url] {
+#url {
   padding: 5px;
   width: 400px;
 }
@@ -27,7 +22,7 @@ form {
   margin: 20px 0;
 }
 
-form.loading input[type=url] {
+.loading #url {
   background: url(/loader.gif) no-repeat 97% center;
 }
 
@@ -58,23 +53,40 @@ form.loading input[type=url] {
   border-radius: 10px;
 }
 
-span.get {
+.get {
   background: #53777A;
 }
 
-span.compress {
+.compress {
   background: #C02942;
 }
 
-span.encode {
+.encode {
   background: #D95B43;
 }
 
-span.import {
+.import {
   background: #ECD078;
 }
 
-span.complete {
+.complete {
   background: #542437;
 }
 
+.error {
+  background: #c00;
+}
+
+p.complete {
+  background: none;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+small {
+  font-size: 60%;
+}
+
+form div {
+  margin: 10px 0;
+}

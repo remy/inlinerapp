@@ -9,30 +9,40 @@
   <h1>Inliner</h1>
   <p>Inline the crap out of your site, making it a single file, then add a cache manifest to make it work offline &lt;3 mobile.</p>
 <form action="/inline">
-  <input id="url" name="url" type="url" placeholder="http://" autofocus />
-  <input type="submit" /> <span id="todo"></span>
+  <input id="url" name="url" type="url" placeholder="http://" autofocus>
+  <input type="submit"> <span id="todo"></span>
+  <div>
+    <label for="no-compress">Don't compress:</label>
+    <input type="checkbox" id="no-compress">
+    <small>(useful for debugging)</small>
+  </div>
 </form>
 <ul id="progress">
 </ul>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script>
-var $url = $('#url'),
+var userurl = document.getElementById('url'),
+    nocompress = document.getElementById('no-compress'),
     $progress = $('#progress'),
     $inputs = $(':input'),
     $todo = $('#todo');
 
 var $form = $('form').submit(function (event) {
+  var url = userurl.value,
+      data = { url: url };
+  
+  if (nocompress.checked) data.nocompress = true;
+  
   event.preventDefault();
   $progress.empty();
   $todo.empty();
-  var url = $url.val();
   
   $inputs.attr('disabled', true);
   $form.addClass('loading');
   
   $.ajax({
     url: '/inline',
-    data: 'url=' + url,
+    data: data,
     dataType: 'json',
     success: function (resp) {
       if (resp.job) {
@@ -44,14 +54,20 @@ var $form = $('form').submit(function (event) {
           if (command == 'jobs') {
             $todo.html(parts[0]);
           } else {
-            $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');            
+            console.log('ok?');
+            $progress.prepend('<li><span class="' + command + '">' + command + '</span><span class="url">' + parts.join(' ') + '</span></li>');
           }
               
           if (command == 'complete') {
             es.close();
             $inputs.attr('disabled', false);
             $form.removeClass('loading');
-            $progress.before('<p class="complete"><a href="' + parts[0] + '">Download ' + url + '</a></p>')
+            $progress.before('<p class="complete"><a href="' + parts[0] + '">Download ' + url + '</a></p>');
+          } else if (command == 'error') {
+            console.log('closing!', command, parts);
+            es.close();
+            $inputs.attr('disabled', false);
+            $form.removeClass('loading');
           }
         };
       } else {
@@ -63,7 +79,7 @@ var $form = $('form').submit(function (event) {
       $inputs.attr('disabled', false);
       $form.removeClass('loading');
     }
-  })
+  });
 });
 
 </script>

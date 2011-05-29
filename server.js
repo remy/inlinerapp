@@ -10,6 +10,7 @@ var routes = function (app) {
   app.get("/progress", function (req, res) {
     var job = req.query.job;
     if (job && inliners[job] !== undefined) {
+      inliners[job].inliner.active = true;
       res.writeHead(200, {'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache'});
       res.write('id:0\n\n');
       
@@ -22,7 +23,7 @@ var routes = function (app) {
       });
       
       inliners[job].inliner.on('done', function (url) {
-        // console.log('statting: ' + __dirname + '/public' + url);
+        console.log('done: ' + url);
         fs.stat(__dirname + '/public' + url, function (err, stat) {
           var size = '';
           if (!err) {
@@ -31,6 +32,15 @@ var routes = function (app) {
           res.write('data: complete ' + url + size + '\n\n');
         });
       });
+      
+      inliners[job].inliner.on('error', function (error) {
+        res.write('data: error ' + error + '\n\n');
+      });
+      
+      if (inliners[job].inliner.dirty) {
+        console.log('dirty');
+        res.write('data: error url could not be requested\n\n');
+      }
     } else {
       res.writeHead(404);
       res.end('Job number required');
@@ -47,23 +57,41 @@ var routes = function (app) {
       var job = connect.utils.uid(10);
       console.log('new job: ' + req.query.url + ' (' + job + ')');
       
+      var options;
+      
+      if (req.query.nocompress) {
+        options = { compressCSS: false, collapseWhitespace: false };
+      }
+      
       inliners[job] = {
-        inliner: new Inliner(req.query.url)
+        inliner: new Inliner(req.query.url, options)
       };
       
       inliners[job].inliner.on('end', function (html) {
-        fs.writeFile(__dirname + '/public/jobs/' + job + '.html', html, function (err) {
-          if (err) {
-            inliners[job].inliner.emit('error', err);
+        if (html) {
+          fs.writeFile(__dirname + '/public/jobs/' + job + '.html', html, function (err) {
+            if (err) {
+              inliners[job].inliner.emit('error', err);
+            } else {
+              inliners[job].inliner.emit('done', '/jobs/' + job + '.html');
+            }
+          });
+        } else {
+          // this event fires before the event stream is setup, so we 
+          // need to flag the job as broken, and when the stream opens
+          // send back that the job failed.
+          if (inliners[job].inliner.active) {
+            // emit event
+            inliners[job].inliner.emit('error', 'url could not be requested');
           } else {
-            inliners[job].inliner.emit('done', '/jobs/' + job + '.html');
+            inliners[job].inliner.dirty = true;
           }
-        });
+        }
       });
       
       if (req.headers['x-requested-with'] == 'XMLHttpRequest') {
         // xhr
-        res.writeHead(200, { 'content-type': 'text/plain' });
+        res.writeHead(200, { 'content-type': 'application/json' });
         res.end(JSON.stringify({ job: job }));
         // res.end(JSON.stringify({ error: 'url not defined' }));
       } else {
