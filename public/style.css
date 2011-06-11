@@ -65,6 +65,10 @@ form {
   background: #D95B43;
 }
 
+.cached {
+  background: #D98958;
+}
+
 .import {
   background: #ECD078;
 }

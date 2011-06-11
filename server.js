@@ -29,6 +29,7 @@ var routes = function (app) {
             size = ' ' + (0|stat.size / 1024) + 'K';
           }
           res.write('data: complete ' + url + size + '\n\n');
+          delete inliners[job];
         });
       });
       
@@ -55,10 +56,15 @@ var routes = function (app) {
       var job = connect.utils.uid(10);
       console.log((new Date).toUTCString() + ' ' + req.query.url + ' (' + job + ')');
       
-      var options;
+      var options = Inliner.defaults;
       
       if (req.query.nocompress) {
-        options = { compressCSS: false, collapseWhitespace: false };
+        options.compressCSS = false
+        options.collapseWhitespace = false;
+      }
+
+      if (req.query.noimages) {
+        options.images = false;
       }
       
       inliners[job] = {

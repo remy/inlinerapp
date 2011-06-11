@@ -8,6 +8,7 @@
 <body>
   <h1>Inliner</h1>
   <p>Inline the crap out of your site, making it a single file, then add a cache manifest to make it work offline &lt;3 mobile.</p>
+  <p><small>For inlining local/offline sites, use the <a href="http://github.com/remy/inliner">inliner command line tool</a></small></p>
 <form action="/inline">
   <input id="url" name="url" type="url" placeholder="http://" autofocus>
   <input type="submit"> <span id="todo"></span>
@@ -16,6 +17,11 @@
     <input type="checkbox" id="no-compress">
     <small>(useful for debugging)</small>
   </div>
+  <div>
+    <label for="no-images">Don't base64 encode images:</label>
+    <input type="checkbox" id="no-images">
+    <small>Including other binary assets</small>
+  </div>
 </form>
 <ul id="progress">
 </ul>
@@ -23,6 +29,7 @@
 <script>
 var userurl = document.getElementById('url'),
     nocompress = document.getElementById('no-compress'),
+    noimages = document.getElementById('no-images'),
     $progress = $('#progress'),
     $inputs = $(':input'),
     $todo = $('#todo');
@@ -32,6 +39,7 @@ var $form = $('form').submit(function (event) {
       data = { url: url };
   
   if (nocompress.checked) data.nocompress = true;
+  if (noimages.checked) data.noimages = true;
   
   event.preventDefault();
   $progress.empty();
@@ -81,6 +89,6 @@ var $form = $('form').submit(function (event) {
 });
 
 </script>
-<a href="http://github.com/remy/inlinerapp"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/5d21241b64dc708fcbb701f68f72f41e9f1fadd6/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+<a href="http://github.com/remy/inliner"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/5d21241b64dc708fcbb701f68f72f41e9f1fadd6/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
 </body>
 </html>
