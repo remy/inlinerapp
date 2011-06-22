@@ -56,7 +56,7 @@ var routes = function (app) {
       var job = connect.utils.uid(10);
       console.log((new Date).toUTCString() + ' ' + req.query.url + ' (' + job + ')');
       
-      var options = Inliner.defaults;
+      var options = Inliner.defaults();
       
       if (req.query.nocompress) {
         options.compressCSS = false
