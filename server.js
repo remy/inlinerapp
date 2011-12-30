@@ -1,8 +1,8 @@
 var fs = require('fs'),
     url = require('url'),
     querystring = require('querystring'),
-    connect = require('./node_modules/connect'),
-    Inliner = require('./inliner/inliner'),
+    connect = require('connect'),
+    Inliner = require('inliner'),
     port = parseInt(process.argv[2], 10) || 80,
     inliners = {};
 
